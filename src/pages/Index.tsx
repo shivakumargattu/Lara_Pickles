@@ -6,9 +6,11 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, Award, Truck } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [featuredProducts] = useState([
     {
       id: 1,
@@ -40,27 +42,59 @@ const Index = () => {
     }
   ]);
 
+  const handleExploreProducts = () => {
+    toast({
+      title: "Exploring Products! 🥒",
+      description: "Taking you to our delicious pickle collection...",
+    });
+    setTimeout(() => navigate('/products'), 500);
+  };
+
+  const handleTrackOrder = () => {
+    toast({
+      title: "Order Tracking",
+      description: "Check your order status here",
+    });
+    setTimeout(() => navigate('/order-status'), 500);
+  };
+
+  const handleViewAllProducts = () => {
+    toast({
+      title: "All Products! 🌟",
+      description: "Discover our complete pickle collection",
+    });
+    setTimeout(() => navigate('/products'), 500);
+  };
+
+  const handleProductClick = (productId: number, productName: string) => {
+    toast({
+      title: `${productName} Selected!`,
+      description: "View details and add to cart",
+    });
+    setTimeout(() => navigate(`/product/${productId}`), 500);
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
       
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 py-20 md:py-32 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-blue-50 via-orange-50 to-blue-100 py-20 md:py-32 overflow-hidden">
         <div className="absolute inset-0 opacity-40">
-          <div className="w-full h-full bg-emerald-600 opacity-5" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23059669' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+          <div className="w-full h-full bg-navy-600 opacity-5" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23003366' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
           }}></div>
         </div>
         
         <div className="container mx-auto px-4 text-center relative z-10">
           <div className="animate-fade-in">
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#003366] via-[#FFA500] to-[#003366] bg-clip-text text-transparent">
                 Lara Pickles
               </span>
             </h1>
             <div className="text-lg md:text-xl text-gray-600 mb-4">
-              <span className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
+              <span className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg border border-[#FFA500]/20">
                 📍 Proudly serving Hyderabad with authentic flavors
               </span>
             </div>
@@ -69,15 +103,15 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-bounce-in" style={{ animationDelay: '0.4s' }}>
               <Button 
-                onClick={() => navigate('/products')}
-                className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white px-10 py-4 text-xl font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                onClick={handleExploreProducts}
+                className="bg-gradient-to-r from-[#003366] to-[#FFA500] hover:from-[#002244] hover:to-[#FF8C00] text-white px-10 py-4 text-xl font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105"
               >
                 Explore Our Pickles 🥒
               </Button>
               <Button 
-                onClick={() => navigate('/order-status')}
+                onClick={handleTrackOrder}
                 variant="outline"
-                className="border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-500 hover:text-white px-10 py-4 text-xl font-semibold rounded-full transition-all duration-300"
+                className="border-2 border-[#003366] text-[#003366] hover:bg-[#003366] hover:text-white px-10 py-4 text-xl font-semibold rounded-full transition-all duration-300 hover:scale-105"
               >
                 Track Your Order
               </Button>
@@ -87,19 +121,19 @@ const Index = () => {
         
         {/* Floating Elements */}
         <div className="absolute top-20 left-10 animate-bounce" style={{ animationDelay: '1s', animationDuration: '3s' }}>
-          <div className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full opacity-70"></div>
+          <div className="w-12 h-12 bg-gradient-to-r from-[#FFA500] to-[#FF8C00] rounded-full opacity-70"></div>
         </div>
         <div className="absolute bottom-32 right-20 animate-bounce" style={{ animationDelay: '2s', animationDuration: '4s' }}>
-          <div className="w-8 h-8 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full opacity-60"></div>
+          <div className="w-8 h-8 bg-gradient-to-r from-[#003366] to-[#FFA500] rounded-full opacity-60"></div>
         </div>
       </section>
 
       {/* Featured Products Section */}
-      <section className="py-20 md:py-24 bg-gradient-to-b from-white to-gray-50">
+      <section className="py-20 md:py-24 bg-gradient-to-b from-white to-blue-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#003366] to-[#FFA500] bg-clip-text text-transparent">
                 Featured Delicacies
               </span>
             </h2>
@@ -112,9 +146,9 @@ const Index = () => {
             {featuredProducts.map((product, index) => (
               <Card 
                 key={product.id} 
-                className="group hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 cursor-pointer border-0 bg-white shadow-lg animate-scale-in overflow-hidden"
+                className="group hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 cursor-pointer border-0 bg-white shadow-lg animate-scale-in overflow-hidden hover:shadow-[#FFA500]/20"
                 style={{ animationDelay: `${0.1 * index}s` }}
-                onClick={() => navigate(`/product/${product.id}`)}
+                onClick={() => handleProductClick(product.id, product.name)}
               >
                 <CardContent className="p-0 relative">
                   <div className="relative overflow-hidden">
@@ -123,22 +157,22 @@ const Index = () => {
                       alt={product.name}
                       className="w-full h-56 object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#003366]/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     
                     {/* Rating Badge */}
                     <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      <Star className="w-4 h-4 fill-[#FFA500] text-[#FFA500]" />
                       <span className="text-sm font-semibold">4.9</span>
                     </div>
                     
                     {/* Price Badge */}
-                    <div className="absolute bottom-4 left-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 py-2 rounded-full font-bold shadow-lg">
+                    <div className="absolute bottom-4 left-4 bg-gradient-to-r from-[#003366] to-[#FFA500] text-white px-4 py-2 rounded-full font-bold shadow-lg">
                       ₹{(product.price * 80).toFixed(0)}
                     </div>
                   </div>
                   
                   <div className="p-6">
-                    <h3 className="font-bold text-gray-800 mb-2 text-lg group-hover:text-emerald-600 transition-colors duration-300">
+                    <h3 className="font-bold text-gray-800 mb-2 text-lg group-hover:text-[#003366] transition-colors duration-300">
                       {product.name}
                     </h3>
                     <p className="text-gray-600 text-sm leading-relaxed">
@@ -152,8 +186,8 @@ const Index = () => {
           
           <div className="text-center mt-16 animate-fade-in" style={{ animationDelay: '0.6s' }}>
             <Button 
-              onClick={() => navigate('/products')}
-              className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white px-12 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+              onClick={handleViewAllProducts}
+              className="bg-gradient-to-r from-[#FFA500] to-[#003366] hover:from-[#FF8C00] hover:to-[#002244] text-white px-12 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105"
             >
               View All Our Pickles
             </Button>
@@ -162,12 +196,12 @@ const Index = () => {
       </section>
 
       {/* About Section */}
-      <section className="bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50 py-20 md:py-24">
+      <section className="bg-gradient-to-r from-blue-50 via-orange-50 to-blue-50 py-20 md:py-24">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16 animate-fade-in">
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-[#003366] to-[#FFA500] bg-clip-text text-transparent">
                   Why Choose Lara Pickles?
                 </span>
               </h2>
@@ -178,7 +212,7 @@ const Index = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               <div className="text-center group animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                <div className="w-20 h-20 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <div className="w-20 h-20 bg-gradient-to-r from-[#003366] to-[#FFA500] rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
                   <span className="text-white text-3xl">🥒</span>
                 </div>
                 <h3 className="font-bold text-gray-800 mb-4 text-xl">Fresh Ingredients</h3>
@@ -188,7 +222,7 @@ const Index = () => {
               </div>
               
               <div className="text-center group animate-slide-up" style={{ animationDelay: '0.4s' }}>
-                <div className="w-20 h-20 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <div className="w-20 h-20 bg-gradient-to-r from-[#FFA500] to-[#003366] rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
                   <Award className="text-white text-3xl" />
                 </div>
                 <h3 className="font-bold text-gray-800 mb-4 text-xl">Traditional Methods</h3>
@@ -198,7 +232,7 @@ const Index = () => {
               </div>
               
               <div className="text-center group animate-slide-up" style={{ animationDelay: '0.6s' }}>
-                <div className="w-20 h-20 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <div className="w-20 h-20 bg-gradient-to-r from-[#003366] to-[#FFA500] rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
                   <Truck className="text-white text-3xl" />
                 </div>
                 <h3 className="font-bold text-gray-800 mb-4 text-xl">Fast Delivery</h3>

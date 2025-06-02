@@ -14,8 +14,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 210 100% 20%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -23,15 +23,15 @@
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 38 100% 50%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 210 100% 20%;
 
     --radius: 0.5rem;
 
@@ -145,6 +145,15 @@
   }
 }
 
+@keyframes pulse-navy-orange {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 51, 102, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 165, 0, 0.3);
+  }
+}
+
 .animate-fade-in {
   animation: fade-in 0.6s ease-out forwards;
 }
@@ -159,6 +168,10 @@
 
 .animate-bounce-in {
   animation: bounce-in 0.7s ease-out forwards;
+}
+
+.animate-pulse-navy-orange {
+  animation: pulse-navy-orange 2s ease-in-out infinite;
 }
 
 /* Utility classes for text effects */
@@ -179,22 +192,72 @@
   box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
-/* Gradient text utilities */
-.gradient-text-emerald {
-  background: linear-gradient(135deg, #059669, #0d9488);
+/* Navy Blue and Orange gradient utilities */
+.gradient-text-navy-orange {
+  background: linear-gradient(135deg, #003366, #FFA500);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Enhanced button styles */
-.btn-gradient {
-  background: linear-gradient(135deg, #059669, #0d9488);
-  transition: all 0.3s ease;
+.gradient-bg-navy-orange {
+  background: linear-gradient(135deg, #003366, #FFA500);
 }
 
-.btn-gradient:hover {
-  background: linear-gradient(135deg, #047857, #0f766e);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(5, 150, 105, 0.3);
+.gradient-bg-orange-navy {
+  background: linear-gradient(135deg, #FFA500, #003366);
+}
+
+/* Enhanced button styles with navy and orange */
+.btn-navy-orange {
+  background: linear-gradient(135deg, #003366, #FFA500);
+  transition: all 0.3s ease;
+  border: none;
+  color: white;
+}
+
+.btn-navy-orange:hover {
+  background: linear-gradient(135deg, #002244, #FF8C00);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(0, 51, 102, 0.3);
+}
+
+.btn-orange-navy {
+  background: linear-gradient(135deg, #FFA500, #003366);
+  transition: all 0.3s ease;
+  border: none;
+  color: white;
+}
+
+.btn-orange-navy:hover {
+  background: linear-gradient(135deg, #FF8C00, #002244);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(255, 165, 0, 0.3);
+}
+
+/* Custom border colors */
+.border-navy {
+  border-color: #003366;
+}
+
+.border-bright-orange {
+  border-color: #FFA500;
+}
+
+/* Custom text colors */
+.text-navy {
+  color: #003366;
+}
+
+.text-bright-orange {
+  color: #FFA500;
+}
+
+/* Custom background colors */
+.bg-navy {
+  background-color: #003366;
+}
+
+.bg-bright-orange {
+  background-color: #FFA500;
 }
