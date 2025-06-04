@@ -3,9 +3,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import TestimonialsSection from "@/components/TestimonialsSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Star, Award, Truck } from "lucide-react";
+import { Star, Award, Truck, Shield, Heart, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
@@ -17,35 +18,39 @@ const Index = () => {
       name: "Classic Dill Pickles",
       price: 8.99,
       image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400&h=300&fit=crop",
-      description: "Traditional dill pickles with a perfect crunch"
+      description: "Traditional dill pickles with a perfect crunch and authentic flavor",
+      rating: 4.9
     },
     {
       id: 2,
       name: "Spicy Jalapeño Pickles",
       price: 9.99,
       image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400&h=300&fit=crop",
-      description: "Fire up your taste buds with these spicy pickles"
+      description: "Fire up your taste buds with these premium spicy pickles",
+      rating: 4.8
     },
     {
       id: 3,
       name: "Sweet Bread & Butter",
       price: 7.99,
       image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400&h=300&fit=crop",
-      description: "Sweet and tangy with a hint of onion"
+      description: "Sweet and tangy with a hint of caramelized onion",
+      rating: 4.9
     },
     {
       id: 4,
       name: "Garlic Kosher Pickles",
       price: 9.49,
       image: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400&h=300&fit=crop",
-      description: "Rich garlic flavor in every bite"
+      description: "Rich garlic flavor infused in every premium bite",
+      rating: 4.7
     }
   ]);
 
   const handleExploreProducts = () => {
     toast({
-      title: "Exploring Products! 🥒",
-      description: "Taking you to our delicious pickle collection...",
+      title: "Premium Collection Awaits! ✨",
+      description: "Discover our handcrafted pickle varieties...",
     });
     setTimeout(() => navigate('/products'), 500);
   };
@@ -53,15 +58,15 @@ const Index = () => {
   const handleTrackOrder = () => {
     toast({
       title: "Order Tracking",
-      description: "Check your order status here",
+      description: "Check your premium order status",
     });
     setTimeout(() => navigate('/order-status'), 500);
   };
 
   const handleViewAllProducts = () => {
     toast({
-      title: "All Products! 🌟",
-      description: "Discover our complete pickle collection",
+      title: "Complete Collection! 🌟",
+      description: "Explore our entire premium range",
     });
     setTimeout(() => navigate('/products'), 500);
   };
@@ -69,76 +74,86 @@ const Index = () => {
   const handleProductClick = (productId: number, productName: string) => {
     toast({
       title: `${productName} Selected!`,
-      description: "View details and add to cart",
+      description: "View premium details and add to cart",
     });
     setTimeout(() => navigate(`/product/${productId}`), 500);
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-cream">
       <Navbar />
       
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-50 via-orange-50 to-blue-100 py-20 md:py-32 overflow-hidden">
-        <div className="absolute inset-0 opacity-40">
-          <div className="w-full h-full bg-navy-600 opacity-5" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23003366' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-          }}></div>
+      <section className="relative bg-gradient-to-br from-cream via-warm-gray to-cream py-24 md:py-32 overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-10 w-32 h-32 bg-gold/10 rounded-full animate-float" style={{ animationDelay: '0s' }}></div>
+          <div className="absolute bottom-32 right-20 w-24 h-24 bg-deep-navy/10 rounded-full animate-float" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute top-1/2 left-1/2 w-48 h-48 bg-gold/5 rounded-full animate-float" style={{ animationDelay: '2s' }}></div>
         </div>
         
         <div className="container mx-auto px-4 text-center relative z-10">
-          <div className="animate-fade-in">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              <span className="bg-gradient-to-r from-[#003366] via-[#FFA500] to-[#003366] bg-clip-text text-transparent">
-                Lara Pickles
-              </span>
+          <div className="animate-fade-in-up">
+            <div className="flex justify-center mb-8">
+              <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-full premium-shadow border border-gold/20">
+                <Sparkles className="w-5 h-5 text-gold animate-glow" />
+                <span className="text-charcoal font-medium">Premium Artisanal Pickles</span>
+                <Sparkles className="w-5 h-5 text-gold animate-glow" />
+              </div>
+            </div>
+            
+            <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight">
+              <span className="text-gradient-navy block">Lara</span>
+              <span className="text-gradient-gold block">Pickles</span>
             </h1>
-            <div className="text-lg md:text-xl text-gray-600 mb-4">
-              <span className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg border border-[#FFA500]/20">
-                📍 Proudly serving Hyderabad with authentic flavors
+            
+            <div className="text-lg md:text-xl text-charcoal/70 mb-4">
+              <span className="inline-flex items-center gap-3 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-full premium-shadow border border-gold/20">
+                <Award className="w-5 h-5 text-gold" />
+                Handcrafted in the Heart of Hyderabad
+                <Heart className="w-5 h-5 text-gold" />
               </span>
             </div>
-            <p className="text-xl md:text-2xl text-gray-700 mb-8 max-w-3xl mx-auto leading-relaxed animate-slide-up" style={{ animationDelay: '0.2s' }}>
-              Handcrafted with love using the finest ingredients. Experience the perfect blend of tradition and flavor in every jar.
+            
+            <p className="text-xl md:text-2xl text-charcoal/80 mb-12 max-w-4xl mx-auto leading-relaxed animate-slide-in-blur" style={{ animationDelay: '0.3s' }}>
+              Experience the perfect harmony of tradition and premium quality. Each jar tells a story of authentic Hyderabadi flavors, crafted with the finest ingredients and generations of expertise.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-bounce-in" style={{ animationDelay: '0.4s' }}>
+            
+            <div className="flex flex-col sm:flex-row gap-6 justify-center animate-scale-in-premium" style={{ animationDelay: '0.6s' }}>
               <Button 
                 onClick={handleExploreProducts}
-                className="bg-gradient-to-r from-[#003366] to-[#FFA500] hover:from-[#002244] hover:to-[#FF8C00] text-white px-10 py-4 text-xl font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105"
+                className="btn-gold text-deep-navy px-12 py-6 text-xl font-bold rounded-full hover-glow text-center"
               >
-                Explore Our Pickles 🥒
+                Discover Premium Collection ✨
               </Button>
               <Button 
                 onClick={handleTrackOrder}
-                variant="outline"
-                className="border-2 border-[#003366] text-[#003366] hover:bg-[#003366] hover:text-white px-10 py-4 text-xl font-semibold rounded-full transition-all duration-300 hover:scale-105"
+                className="btn-premium text-cream px-12 py-6 text-xl font-semibold rounded-full text-center"
               >
                 Track Your Order
               </Button>
             </div>
           </div>
         </div>
-        
-        {/* Floating Elements */}
-        <div className="absolute top-20 left-10 animate-bounce" style={{ animationDelay: '1s', animationDuration: '3s' }}>
-          <div className="w-12 h-12 bg-gradient-to-r from-[#FFA500] to-[#FF8C00] rounded-full opacity-70"></div>
-        </div>
-        <div className="absolute bottom-32 right-20 animate-bounce" style={{ animationDelay: '2s', animationDuration: '4s' }}>
-          <div className="w-8 h-8 bg-gradient-to-r from-[#003366] to-[#FFA500] rounded-full opacity-60"></div>
-        </div>
       </section>
 
       {/* Featured Products Section */}
-      <section className="py-20 md:py-24 bg-gradient-to-b from-white to-blue-50">
+      <section className="py-24 bg-white">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16 animate-fade-in">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-[#003366] to-[#FFA500] bg-clip-text text-transparent">
-                Featured Delicacies
-              </span>
+          <div className="text-center mb-20 animate-fade-in-up">
+            <div className="flex justify-center mb-6">
+              <div className="flex items-center gap-2 bg-gold/10 px-4 py-2 rounded-full">
+                <Star className="w-5 h-5 text-gold" />
+                <span className="text-charcoal font-medium">Premium Selection</span>
+              </div>
+            </div>
+            <h2 className="text-5xl md:text-6xl font-bold mb-8">
+              <span className="text-gradient-navy">Featured</span>
+              <br />
+              <span className="text-gradient-gold">Delicacies</span>
             </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Discover our most loved pickle varieties, each crafted with authentic Hyderabadi tradition
+            <p className="text-charcoal/70 text-xl max-w-3xl mx-auto leading-relaxed">
+              Discover our most celebrated pickle varieties, each meticulously crafted using authentic Hyderabadi traditions and premium ingredients
             </p>
           </div>
           
@@ -146,8 +161,8 @@ const Index = () => {
             {featuredProducts.map((product, index) => (
               <Card 
                 key={product.id} 
-                className="group hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 cursor-pointer border-0 bg-white shadow-lg animate-scale-in overflow-hidden hover:shadow-[#FFA500]/20"
-                style={{ animationDelay: `${0.1 * index}s` }}
+                className="group hover-lift cursor-pointer border-0 bg-white premium-shadow hover:premium-shadow-lg transition-all duration-500 animate-scale-in-premium overflow-hidden"
+                style={{ animationDelay: `${0.15 * index}s` }}
                 onClick={() => handleProductClick(product.id, product.name)}
               >
                 <CardContent className="p-0 relative">
@@ -155,95 +170,113 @@ const Index = () => {
                     <img 
                       src={product.image} 
                       alt={product.name}
-                      className="w-full h-56 object-cover transition-transform duration-700 group-hover:scale-110"
+                      className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#003366]/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-deep-navy/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     
                     {/* Rating Badge */}
-                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-[#FFA500] text-[#FFA500]" />
-                      <span className="text-sm font-semibold">4.9</span>
+                    <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-full px-3 py-2 flex items-center gap-1 premium-shadow">
+                      <Star className="w-4 h-4 fill-gold text-gold" />
+                      <span className="text-sm font-bold text-charcoal">{product.rating}</span>
                     </div>
                     
                     {/* Price Badge */}
-                    <div className="absolute bottom-4 left-4 bg-gradient-to-r from-[#003366] to-[#FFA500] text-white px-4 py-2 rounded-full font-bold shadow-lg">
+                    <div className="absolute bottom-4 left-4 bg-gradient-gold text-deep-navy px-4 py-2 rounded-full font-bold premium-shadow animate-glow">
                       ₹{(product.price * 80).toFixed(0)}
                     </div>
                   </div>
                   
                   <div className="p-6">
-                    <h3 className="font-bold text-gray-800 mb-2 text-lg group-hover:text-[#003366] transition-colors duration-300">
+                    <h3 className="font-bold text-charcoal mb-3 text-xl group-hover:text-deep-navy transition-colors duration-300">
                       {product.name}
                     </h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">
+                    <p className="text-charcoal/70 leading-relaxed line-clamp-2">
                       {product.description}
                     </p>
+                    
+                    <div className="mt-4 flex items-center justify-between">
+                      <div className="flex items-center gap-1">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className={`w-4 h-4 ${i < Math.floor(product.rating) ? 'fill-gold text-gold' : 'text-gray-300'}`} />
+                        ))}
+                      </div>
+                      <span className="text-xs text-charcoal/60 bg-gold/10 px-2 py-1 rounded-full">Premium</span>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
             ))}
           </div>
           
-          <div className="text-center mt-16 animate-fade-in" style={{ animationDelay: '0.6s' }}>
+          <div className="text-center mt-16 animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
             <Button 
               onClick={handleViewAllProducts}
-              className="bg-gradient-to-r from-[#FFA500] to-[#003366] hover:from-[#FF8C00] hover:to-[#002244] text-white px-12 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-105"
+              className="btn-premium text-cream px-16 py-6 text-lg font-semibold rounded-full"
             >
-              View All Our Pickles
+              View Complete Premium Collection
             </Button>
           </div>
         </div>
       </section>
 
       {/* About Section */}
-      <section className="bg-gradient-to-r from-blue-50 via-orange-50 to-blue-50 py-20 md:py-24">
+      <section className="bg-cream py-24">
         <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16 animate-fade-in">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                <span className="bg-gradient-to-r from-[#003366] to-[#FFA500] bg-clip-text text-transparent">
-                  Why Choose Lara Pickles?
-                </span>
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-20 animate-fade-in-up">
+              <div className="flex justify-center mb-6">
+                <div className="flex items-center gap-2 bg-gold/20 px-4 py-2 rounded-full">
+                  <Award className="w-5 h-5 text-gold" />
+                  <span className="text-charcoal font-medium">Why Choose Excellence</span>
+                </div>
+              </div>
+              <h2 className="text-5xl md:text-6xl font-bold mb-8">
+                <span className="text-gradient-navy">Crafted with</span>
+                <br />
+                <span className="text-gradient-gold">Passion & Precision</span>
               </h2>
-              <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                From the heart of Hyderabad, we bring you pickles that celebrate authentic flavors and traditional craftsmanship
+              <p className="text-charcoal/70 text-xl max-w-3xl mx-auto leading-relaxed">
+                From the vibrant streets of Hyderabad, we bring you pickles that celebrate authentic flavors, traditional craftsmanship, and uncompromising quality
               </p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-              <div className="text-center group animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                <div className="w-20 h-20 bg-gradient-to-r from-[#003366] to-[#FFA500] rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <span className="text-white text-3xl">🥒</span>
+              <div className="text-center group animate-fade-in-left" style={{ animationDelay: '0.2s' }}>
+                <div className="w-24 h-24 bg-gradient-gold rounded-2xl flex items-center justify-center mx-auto mb-8 group-hover:animate-glow transition-all duration-500 premium-shadow">
+                  <Heart className="text-deep-navy text-4xl" />
                 </div>
-                <h3 className="font-bold text-gray-800 mb-4 text-xl">Fresh Ingredients</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Only the finest, locally-sourced vegetables from Telangana's fertile farms
+                <h3 className="font-bold text-charcoal mb-6 text-2xl">Premium Ingredients</h3>
+                <p className="text-charcoal/70 leading-relaxed text-lg">
+                  Hand-selected vegetables from Telangana's finest farms, combined with authentic spices and traditional recipes passed down through generations.
                 </p>
               </div>
               
-              <div className="text-center group animate-slide-up" style={{ animationDelay: '0.4s' }}>
-                <div className="w-20 h-20 bg-gradient-to-r from-[#FFA500] to-[#003366] rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <Award className="text-white text-3xl" />
+              <div className="text-center group animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                <div className="w-24 h-24 bg-gradient-to-br from-deep-navy to-rich-navy rounded-2xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform duration-500 premium-shadow">
+                  <Award className="text-gold text-4xl" />
                 </div>
-                <h3 className="font-bold text-gray-800 mb-4 text-xl">Traditional Methods</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Time-honored Hyderabadi recipes passed down through generations
+                <h3 className="font-bold text-charcoal mb-6 text-2xl">Artisanal Craftsmanship</h3>
+                <p className="text-charcoal/70 leading-relaxed text-lg">
+                  Time-honored Hyderabadi techniques refined over decades, ensuring each jar delivers the perfect balance of flavor, texture, and authenticity.
                 </p>
               </div>
               
-              <div className="text-center group animate-slide-up" style={{ animationDelay: '0.6s' }}>
-                <div className="w-20 h-20 bg-gradient-to-r from-[#003366] to-[#FFA500] rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <Truck className="text-white text-3xl" />
+              <div className="text-center group animate-fade-in-right" style={{ animationDelay: '0.6s' }}>
+                <div className="w-24 h-24 bg-gradient-gold rounded-2xl flex items-center justify-center mx-auto mb-8 group-hover:animate-glow transition-all duration-500 premium-shadow">
+                  <Truck className="text-deep-navy text-4xl" />
                 </div>
-                <h3 className="font-bold text-gray-800 mb-4 text-xl">Fast Delivery</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Quick delivery across Hyderabad and surrounding areas with care
+                <h3 className="font-bold text-charcoal mb-6 text-2xl">Premium Delivery</h3>
+                <p className="text-charcoal/70 leading-relaxed text-lg">
+                  Swift, secure delivery across Hyderabad and beyond, with premium packaging that preserves freshness and ensures your pickles arrive in perfect condition.
                 </p>
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Testimonials Section */}
+      <TestimonialsSection />
 
       <Footer />
     </div>
