@@ -94,14 +94,7 @@ const Index = () => {
         
         <div className="container mx-auto px-4 text-center relative z-10">
           <div className="animate-fade-in-up">
-            <div className="flex justify-center mb-8">
-              <div className="flex items-center gap-3 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-full premium-shadow border border-gold/20">
-                <Sparkles className="w-5 h-5 text-gold animate-glow" />
-                <span className="text-charcoal font-medium">Premium Artisanal Pickles</span>
-                <Sparkles className="w-5 h-5 text-gold animate-glow" />
-              </div>
-            </div>
-            
+        
             <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight">
               <span className="text-gradient-navy block">Lara</span>
               <span className="text-gradient-gold block">Pickles</span>
