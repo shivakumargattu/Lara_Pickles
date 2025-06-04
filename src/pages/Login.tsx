@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
+import { LogIn, Mail, Lock } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -35,8 +36,6 @@ const Login = () => {
       return;
     }
 
-    // Mock login - in real app this would validate against a backend
-    // For demo purposes, any email/password combination works
     const userData = {
       name: "John Doe",
       email: formData.email,
@@ -54,24 +53,33 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-cream via-warm-gray to-cream">
       <Navbar />
       
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-md mx-auto">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl text-center text-green-800">
+      <div className="container mx-auto px-4 py-16">
+        <div className="max-w-md mx-auto animate-fade-in-up">
+          <Card className="premium-shadow hover:premium-shadow-lg transition-all duration-500 border-0 bg-white/95 backdrop-blur-sm overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-gold"></div>
+            
+            <CardHeader className="text-center pb-8 pt-8">
+              <div className="w-16 h-16 bg-gradient-premium rounded-full flex items-center justify-center mx-auto mb-4 animate-glow">
+                <LogIn className="w-8 h-8 text-gold" />
+              </div>
+              <CardTitle className="text-3xl font-bold text-gradient-navy mb-2">
                 Welcome Back
               </CardTitle>
-              <p className="text-center text-gray-600">
-                Login to your PickleCraft account
+              <p className="text-charcoal/70 text-lg">
+                Login to your <span className="text-gradient-gold font-semibold">Lara Pickles</span> account
               </p>
             </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <Label htmlFor="email">Email</Label>
+            
+            <CardContent className="px-8 pb-8">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="animate-fade-in-left" style={{ animationDelay: '0.2s' }}>
+                  <Label htmlFor="email" className="text-charcoal font-medium flex items-center gap-2 mb-2">
+                    <Mail className="w-4 h-4 text-gold" />
+                    Email Address
+                  </Label>
                   <Input
                     id="email"
                     name="email"
@@ -79,12 +87,16 @@ const Login = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="Enter your email"
+                    className="border-2 border-warm-gray focus:border-gold transition-all duration-300 h-12"
                     required
                   />
                 </div>
                 
-                <div>
-                  <Label htmlFor="password">Password</Label>
+                <div className="animate-fade-in-right" style={{ animationDelay: '0.3s' }}>
+                  <Label htmlFor="password" className="text-charcoal font-medium flex items-center gap-2 mb-2">
+                    <Lock className="w-4 h-4 text-gold" />
+                    Password
+                  </Label>
                   <Input
                     id="password"
                     name="password"
@@ -92,33 +104,36 @@ const Login = () => {
                     value={formData.password}
                     onChange={handleInputChange}
                     placeholder="Enter your password"
+                    className="border-2 border-warm-gray focus:border-gold transition-all duration-300 h-12"
                     required
                   />
                 </div>
                 
-                <Button 
-                  type="submit" 
-                  className="w-full bg-green-600 hover:bg-green-700 text-white"
-                >
-                  Login
-                </Button>
+                <div className="animate-scale-in-premium" style={{ animationDelay: '0.4s' }}>
+                  <Button 
+                    type="submit" 
+                    className="w-full btn-gold text-deep-navy font-semibold h-12 text-lg"
+                  >
+                    Sign In to Account
+                  </Button>
+                </div>
                 
-                <div className="text-center">
-                  <p className="text-gray-600">
+                <div className="text-center animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+                  <p className="text-charcoal/70">
                     Don't have an account?{' '}
                     <Button 
                       onClick={() => navigate('/register')}
                       variant="link"
-                      className="text-green-600 p-0 h-auto"
+                      className="text-gold hover:text-dark-gold p-0 h-auto font-semibold"
                     >
-                      Register here
+                      Create Account
                     </Button>
                   </p>
                 </div>
                 
-                <div className="text-center mt-6 p-4 bg-gray-100 rounded">
-                  <p className="text-sm text-gray-600 mb-2">Demo Credentials:</p>
-                  <p className="text-xs text-gray-500">Use any email and password to login</p>
+                <div className="text-center mt-8 p-6 bg-gradient-to-r from-gold/10 to-dark-gold/10 rounded-lg border border-gold/20 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+                  <p className="text-sm text-charcoal/80 mb-2 font-medium">Demo Access</p>
+                  <p className="text-xs text-charcoal/60">Use any email and password combination to explore</p>
                 </div>
               </form>
             </CardContent>

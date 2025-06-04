@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
+import { UserPlus, User, Mail, Lock, Shield } from "lucide-react";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -55,7 +56,6 @@ const Register = () => {
       return;
     }
 
-    // Mock registration - in real app this would call an API
     const userData = {
       name: formData.name,
       email: formData.email,
@@ -73,24 +73,33 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-cream via-warm-gray to-cream">
       <Navbar />
       
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-md mx-auto">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl text-center text-green-800">
-                Create Account
+      <div className="container mx-auto px-4 py-16">
+        <div className="max-w-md mx-auto animate-fade-in-up">
+          <Card className="premium-shadow hover:premium-shadow-lg transition-all duration-500 border-0 bg-white/95 backdrop-blur-sm overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-gold"></div>
+            
+            <CardHeader className="text-center pb-6 pt-8">
+              <div className="w-16 h-16 bg-gradient-premium rounded-full flex items-center justify-center mx-auto mb-4 animate-glow">
+                <UserPlus className="w-8 h-8 text-gold" />
+              </div>
+              <CardTitle className="text-3xl font-bold text-gradient-navy mb-2">
+                Join Lara Pickles
               </CardTitle>
-              <p className="text-center text-gray-600">
-                Join PickleCraft and start shopping for premium pickles
+              <p className="text-charcoal/70 text-lg">
+                Create your account and discover premium <span className="text-gradient-gold font-semibold">artisanal pickles</span>
               </p>
             </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <Label htmlFor="name">Full Name</Label>
+            
+            <CardContent className="px-8 pb-8">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="animate-fade-in-left" style={{ animationDelay: '0.1s' }}>
+                  <Label htmlFor="name" className="text-charcoal font-medium flex items-center gap-2 mb-2">
+                    <User className="w-4 h-4 text-gold" />
+                    Full Name
+                  </Label>
                   <Input
                     id="name"
                     name="name"
@@ -98,12 +107,16 @@ const Register = () => {
                     value={formData.name}
                     onChange={handleInputChange}
                     placeholder="Enter your full name"
+                    className="border-2 border-warm-gray focus:border-gold transition-all duration-300 h-11"
                     required
                   />
                 </div>
                 
-                <div>
-                  <Label htmlFor="email">Email</Label>
+                <div className="animate-fade-in-right" style={{ animationDelay: '0.2s' }}>
+                  <Label htmlFor="email" className="text-charcoal font-medium flex items-center gap-2 mb-2">
+                    <Mail className="w-4 h-4 text-gold" />
+                    Email Address
+                  </Label>
                   <Input
                     id="email"
                     name="email"
@@ -111,25 +124,33 @@ const Register = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="Enter your email"
+                    className="border-2 border-warm-gray focus:border-gold transition-all duration-300 h-11"
                     required
                   />
                 </div>
                 
-                <div>
-                  <Label htmlFor="password">Password</Label>
+                <div className="animate-fade-in-left" style={{ animationDelay: '0.3s' }}>
+                  <Label htmlFor="password" className="text-charcoal font-medium flex items-center gap-2 mb-2">
+                    <Lock className="w-4 h-4 text-gold" />
+                    Password
+                  </Label>
                   <Input
                     id="password"
                     name="password"
                     type="password"
                     value={formData.password}
                     onChange={handleInputChange}
-                    placeholder="Enter your password"
+                    placeholder="Create a secure password"
+                    className="border-2 border-warm-gray focus:border-gold transition-all duration-300 h-11"
                     required
                   />
                 </div>
                 
-                <div>
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <div className="animate-fade-in-right" style={{ animationDelay: '0.4s' }}>
+                  <Label htmlFor="confirmPassword" className="text-charcoal font-medium flex items-center gap-2 mb-2">
+                    <Shield className="w-4 h-4 text-gold" />
+                    Confirm Password
+                  </Label>
                   <Input
                     id="confirmPassword"
                     name="confirmPassword"
@@ -137,26 +158,29 @@ const Register = () => {
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                     placeholder="Confirm your password"
+                    className="border-2 border-warm-gray focus:border-gold transition-all duration-300 h-11"
                     required
                   />
                 </div>
                 
-                <Button 
-                  type="submit" 
-                  className="w-full bg-green-600 hover:bg-green-700 text-white"
-                >
-                  Create Account
-                </Button>
+                <div className="animate-scale-in-premium" style={{ animationDelay: '0.5s' }}>
+                  <Button 
+                    type="submit" 
+                    className="w-full btn-gold text-deep-navy font-semibold h-12 text-lg"
+                  >
+                    Create Your Account
+                  </Button>
+                </div>
                 
-                <div className="text-center">
-                  <p className="text-gray-600">
+                <div className="text-center animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+                  <p className="text-charcoal/70">
                     Already have an account?{' '}
                     <Button 
                       onClick={() => navigate('/login')}
                       variant="link"
-                      className="text-green-600 p-0 h-auto"
+                      className="text-gold hover:text-dark-gold p-0 h-auto font-semibold"
                     >
-                      Login here
+                      Sign In
                     </Button>
                   </p>
                 </div>
