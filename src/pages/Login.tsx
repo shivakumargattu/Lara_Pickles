@@ -127,8 +127,17 @@ const Login = () => {
                       className="text-gold hover:text-dark-gold p-0 h-auto font-semibold"
                     >
                       Create Account
+                    </Button> <br/>
+                    <Button 
+                      onClick={() => navigate('/admin')}
+                      variant="link"
+                      className="text-gold hover:text-dark-gold p-0 h-auto font-semibold"
+                    >
+                     I'm Admin
                     </Button>
+                  
                   </p>
+
                 </div>
                 
                 <div className="text-center mt-8 p-6 bg-gradient-to-r from-gold/10 to-dark-gold/10 rounded-lg border border-gold/20 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
