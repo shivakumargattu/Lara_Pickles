@@ -32,22 +32,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Check if user is admin
-          setTimeout(async () => {
-            try {
-              const { data: roleData, error } = await supabase
-                .from('user_roles')
-                .select('role')
-                .eq('user_id', session.user.id)
-                .single();
-              
-              if (!error && roleData) {
-                setIsAdmin(roleData.role === 'admin');
-              }
-            } catch (error) {
-              console.log('Error checking admin status:', error);
-            }
-          }, 0);
+          // Check if user is admin by email (temporary solution)
+          const isAdminUser = session.user.email === 'admin@larapickles.com' || 
+                             session.user.email === 'gshiva0018@gmail.com';
+          setIsAdmin(isAdminUser);
         } else {
           setIsAdmin(false);
         }

@@ -70,17 +70,16 @@ const PlaceOrder = () => {
     setLoading(true);
 
     try {
-      // Create order
+      // Create order using the correct column names from the database schema
       const { data: order, error: orderError } = await supabase
         .from('orders')
         .insert({
           user_id: user.id,
-          user_email: user.email || '',
-          phone: orderData.phone,
-          address: orderData.address,
-          notes: orderData.notes,
-          total: parseFloat(getTotalPrice()),
-          status: 'Pending'
+          customer_email: user.email || '',
+          customer_name: user.user_metadata?.full_name || '',
+          shipping_address: orderData.address,
+          total_amount: parseFloat(getTotalPrice()),
+          status: 'pending'
         })
         .select()
         .single();
@@ -91,7 +90,6 @@ const PlaceOrder = () => {
       const orderItems = cartItems.map((item: any) => ({
         order_id: order.id,
         product_id: item.id,
-        product_name: item.name,
         price: item.price,
         quantity: item.quantity
       }));
