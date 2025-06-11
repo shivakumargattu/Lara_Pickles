@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -12,19 +13,27 @@ import { LogIn, Mail, Lock } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { signIn, user } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleInputChange = (e) => {
+  // Redirect if already logged in
+  if (user) {
+    navigate('/');
+    return null;
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.email || !formData.password) {
@@ -36,20 +45,21 @@ const Login = () => {
       return;
     }
 
-    const userData = {
-      name: "John Doe",
-      email: formData.email,
-      id: Date.now()
-    };
+    setLoading(true);
     
-    localStorage.setItem('user', JSON.stringify(userData));
+    const { error } = await signIn(formData.email, formData.password);
     
-    toast({
-      title: "Success",
-      description: "Logged in successfully!",
-    });
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to sign in. Please check your credentials.",
+        variant: "destructive"
+      });
+    } else {
+      navigate('/');
+    }
     
-    navigate('/');
+    setLoading(false);
   };
 
   return (
@@ -112,9 +122,10 @@ const Login = () => {
                 <div className="animate-scale-in-premium" style={{ animationDelay: '0.4s' }}>
                   <Button 
                     type="submit" 
+                    disabled={loading}
                     className="w-full btn-gold text-deep-navy font-semibold h-12 text-lg"
                   >
-                    Sign In to Account
+                    {loading ? 'Signing In...' : 'Sign In to Account'}
                   </Button>
                 </div>
                 
@@ -127,22 +138,8 @@ const Login = () => {
                       className="text-gold hover:text-dark-gold p-0 h-auto font-semibold"
                     >
                       Create Account
-                    </Button> <br/>
-                    <Button 
-                      onClick={() => navigate('/admin')}
-                      variant="link"
-                      className="text-gold hover:text-dark-gold p-0 h-auto font-semibold"
-                    >
-                     I'm Admin
                     </Button>
-                  
                   </p>
-
-                </div>
-                
-                <div className="text-center mt-8 p-6 bg-gradient-to-r from-gold/10 to-dark-gold/10 rounded-lg border border-gold/20 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-                  <p className="text-sm text-charcoal/80 mb-2 font-medium">Demo Access</p>
-                  <p className="text-xs text-charcoal/60">Use any email and password combination to explore</p>
                 </div>
               </form>
             </CardContent>

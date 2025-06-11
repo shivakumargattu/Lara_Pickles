@@ -1,6 +1,8 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -12,28 +14,39 @@ import { toast } from "@/hooks/use-toast";
 
 const PlaceOrder = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [orderData, setOrderData] = useState({
     address: '',
     phone: '',
     notes: ''
   });
+  const [loading, setLoading] = useState(false);
 
   const cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   const getTotalPrice = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
+    return cartItems.reduce((total: number, item: any) => total + (item.price * item.quantity), 0).toFixed(2);
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setOrderData({
       ...orderData,
       [e.target.name]: e.target.value
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "Please log in to place an order.",
+        variant: "destructive"
+      });
+      navigate('/login');
+      return;
+    }
     
     if (!orderData.address || !orderData.phone) {
       toast({
@@ -44,30 +57,71 @@ const PlaceOrder = () => {
       return;
     }
 
-    // Create order
-    const order = {
-      id: Date.now(),
-      userId: user.id,
-      userEmail: user.email,
-      items: cartItems,
-      total: getTotalPrice(),
-      address: orderData.address,
-      phone: orderData.phone,
-      notes: orderData.notes,
-      status: 'Pending',
-      date: new Date().toISOString()
-    };
+    if (cartItems.length === 0) {
+      toast({
+        title: "Error",
+        description: "Your cart is empty.",
+        variant: "destructive"
+      });
+      navigate('/cart');
+      return;
+    }
 
-    // Save order to localStorage (in real app this would be sent to backend)
-    const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-    orders.push(order);
-    localStorage.setItem('orders', JSON.stringify(orders));
+    setLoading(true);
 
-    // Clear cart
-    localStorage.removeItem('cart');
+    try {
+      // Create order
+      const { data: order, error: orderError } = await supabase
+        .from('orders')
+        .insert({
+          user_id: user.id,
+          user_email: user.email || '',
+          phone: orderData.phone,
+          address: orderData.address,
+          notes: orderData.notes,
+          total: parseFloat(getTotalPrice()),
+          status: 'Pending'
+        })
+        .select()
+        .single();
 
-    // Redirect to success page
-    navigate('/order-success', { state: { orderId: order.id } });
+      if (orderError) throw orderError;
+
+      // Create order items
+      const orderItems = cartItems.map((item: any) => ({
+        order_id: order.id,
+        product_id: item.id,
+        product_name: item.name,
+        price: item.price,
+        quantity: item.quantity
+      }));
+
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .insert(orderItems);
+
+      if (itemsError) throw itemsError;
+
+      // Clear cart
+      localStorage.removeItem('cart');
+
+      toast({
+        title: "Success!",
+        description: "Your order has been placed successfully.",
+      });
+
+      // Redirect to success page
+      navigate('/order-success', { state: { orderId: order.id } });
+    } catch (error: any) {
+      console.error('Error placing order:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to place order. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (cartItems.length === 0) {
@@ -131,9 +185,10 @@ const PlaceOrder = () => {
                   
                   <Button 
                     type="submit" 
+                    disabled={loading}
                     className="w-full bg-green-600 hover:bg-green-700 text-white"
                   >
-                    Confirm Order
+                    {loading ? 'Processing...' : 'Confirm Order'}
                   </Button>
                 </form>
               </CardContent>
@@ -148,7 +203,7 @@ const PlaceOrder = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {cartItems.map((item) => (
+                  {cartItems.map((item: any) => (
                     <div key={item.id} className="flex justify-between items-center">
                       <div>
                         <h4 className="font-medium">{item.name}</h4>
@@ -169,11 +224,12 @@ const PlaceOrder = () => {
                     </div>
                   </div>
                   
-                  <div className="bg-green-50 p-4 rounded">
-                    <h4 className="font-medium text-green-800 mb-2">Customer Information</h4>
-                    <p className="text-sm text-gray-700">{user.name}</p>
-                    <p className="text-sm text-gray-700">{user.email}</p>
-                  </div>
+                  {user && (
+                    <div className="bg-green-50 p-4 rounded">
+                      <h4 className="font-medium text-green-800 mb-2">Customer Information</h4>
+                      <p className="text-sm text-gray-700">{user.email}</p>
+                    </div>
+                  )}
                   
                   <div className="bg-yellow-50 p-4 rounded">
                     <h4 className="font-medium text-yellow-800 mb-2">Delivery Information</h4>

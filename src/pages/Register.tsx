@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -12,21 +13,29 @@ import { UserPlus, User, Mail, Lock, Shield } from "lucide-react";
 
 const Register = () => {
   const navigate = useNavigate();
+  const { signUp, user } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: ''
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleInputChange = (e) => {
+  // Redirect if already logged in
+  if (user) {
+    navigate('/');
+    return null;
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
@@ -56,20 +65,21 @@ const Register = () => {
       return;
     }
 
-    const userData = {
-      name: formData.name,
-      email: formData.email,
-      id: Date.now()
-    };
+    setLoading(true);
     
-    localStorage.setItem('user', JSON.stringify(userData));
+    const { error } = await signUp(formData.email, formData.password, formData.name);
     
-    toast({
-      title: "Success",
-      description: "Account created successfully!",
-    });
+    if (error) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create account. Please try again.",
+        variant: "destructive"
+      });
+    } else {
+      // User will be redirected after email verification
+    }
     
-    navigate('/');
+    setLoading(false);
   };
 
   return (
@@ -166,9 +176,10 @@ const Register = () => {
                 <div className="animate-scale-in-premium" style={{ animationDelay: '0.5s' }}>
                   <Button 
                     type="submit" 
+                    disabled={loading}
                     className="w-full btn-gold text-deep-navy font-semibold h-12 text-lg"
                   >
-                    Create Your Account
+                    {loading ? 'Creating Account...' : 'Create Your Account'}
                   </Button>
                 </div>
                 

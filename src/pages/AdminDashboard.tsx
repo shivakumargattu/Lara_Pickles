@@ -1,6 +1,8 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -9,6 +11,7 @@ import { Package, ShoppingCart, Clock, Users } from "lucide-react";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const { user, isAdmin, isLoading } = useAuth();
   const [stats, setStats] = useState({
     totalProducts: 0,
     totalOrders: 0,
@@ -17,24 +20,61 @@ const AdminDashboard = () => {
   });
 
   useEffect(() => {
-    // Check if admin is logged in
-    const admin = localStorage.getItem('admin');
-    if (!admin) {
-      navigate('/admin-login');
-      return;
+    if (!isLoading) {
+      if (!user || !isAdmin) {
+        navigate('/login');
+        return;
+      }
+      
+      loadStats();
     }
+  }, [user, isAdmin, isLoading, navigate]);
 
-    // Calculate stats
-    const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-    const pendingOrders = orders.filter(order => order.status.toLowerCase() === 'pending');
-    
-    setStats({
-      totalProducts: 6, // Mock data - in real app this would come from backend
-      totalOrders: orders.length,
-      pendingOrders: pendingOrders.length,
-      totalUsers: 5 // Mock data
-    });
-  }, [navigate]);
+  const loadStats = async () => {
+    try {
+      // Get products count
+      const { count: productsCount } = await supabase
+        .from('products')
+        .select('*', { count: 'exact', head: true });
+
+      // Get orders count
+      const { count: ordersCount } = await supabase
+        .from('orders')
+        .select('*', { count: 'exact', head: true });
+
+      // Get pending orders count
+      const { count: pendingCount } = await supabase
+        .from('orders')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'Pending');
+
+      // Get users count
+      const { count: usersCount } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true });
+
+      setStats({
+        totalProducts: productsCount || 0,
+        totalOrders: ordersCount || 0,
+        pendingOrders: pendingCount || 0,
+        totalUsers: usersCount || 0
+      });
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-lg">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user || !isAdmin) {
+    return null; // Will redirect in useEffect
+  }
 
   const statCards = [
     {
@@ -74,7 +114,7 @@ const AdminDashboard = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-green-800 mb-2">Admin Dashboard</h1>
-          <p className="text-gray-600">Welcome to the PickleCraft admin panel</p>
+          <p className="text-gray-600">Welcome to the Lara Pickles admin panel</p>
         </div>
 
         {/* Statistics Cards */}
@@ -136,41 +176,6 @@ const AdminDashboard = () => {
             </CardContent>
           </Card>
         </div>
-
-        {/* Recent Orders */}
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle className="text-green-800">Recent Orders</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {JSON.parse(localStorage.getItem('orders') || '[]')
-                .slice(-5)
-                .reverse()
-                .map((order) => (
-                <div key={order.id} className="flex justify-between items-center py-2 border-b last:border-b-0">
-                  <div>
-                    <p className="font-medium">Order #{order.id}</p>
-                    <p className="text-sm text-gray-600">{order.userEmail}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-medium">${order.total}</p>
-                    <span className={`inline-block px-2 py-1 rounded-full text-xs ${
-                      order.status.toLowerCase() === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                      order.status.toLowerCase() === 'approved' ? 'bg-green-100 text-green-800' :
-                      'bg-red-100 text-red-800'
-                    }`}>
-                      {order.status}
-                    </span>
-                  </div>
-                </div>
-              ))}
-              {JSON.parse(localStorage.getItem('orders') || '[]').length === 0 && (
-                <p className="text-gray-500 text-center py-4">No orders yet</p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
       </div>
       
       <Footer />
