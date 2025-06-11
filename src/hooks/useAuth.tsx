@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -32,9 +31,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Check if user is admin by email (temporary solution)
-          const isAdminUser = session.user.email === 'admin@larapickles.com' || 
-                             session.user.email === 'gshiva0018@gmail.com';
+          // Check if user is admin by email
+          const isAdminUser = session.user.email === 'admin@lara2025';
           setIsAdmin(isAdminUser);
         } else {
           setIsAdmin(false);
