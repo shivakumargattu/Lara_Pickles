@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -31,9 +32,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Check if user is admin by email
-          const isAdminUser = session.user.email === 'admin@lara2025';
+          // Check if user is admin by email - supporting multiple admin emails
+          const adminEmails = [
+            'admin@lara2025',
+            'admin@larapickles.com',
+            'gshiva0018@gmail.com'
+          ];
+          const isAdminUser = adminEmails.includes(session.user.email || '');
           setIsAdmin(isAdminUser);
+          console.log('User is admin:', isAdminUser, 'Email:', session.user.email);
         } else {
           setIsAdmin(false);
         }
@@ -44,8 +51,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session check:', session?.user?.email);
       setSession(session);
       setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        const adminEmails = [
+          'admin@lara2025',
+          'admin@larapickles.com', 
+          'gshiva0018@gmail.com'
+        ];
+        const isAdminUser = adminEmails.includes(session.user.email || '');
+        setIsAdmin(isAdminUser);
+      }
+      
       setIsLoading(false);
     });
 
@@ -53,6 +72,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signUp = async (email: string, password: string, fullName: string) => {
+    setIsLoading(true);
     const redirectUrl = `${window.location.origin}/`;
     
     const { error } = await supabase.auth.signUp({
@@ -71,12 +91,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         title: "Success!",
         description: "Account created successfully! Please check your email to verify your account.",
       });
+    } else {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
     }
 
+    setIsLoading(false);
     return { error };
   };
 
   const signIn = async (email: string, password: string) => {
+    setIsLoading(true);
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password
@@ -87,8 +115,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         title: "Welcome back!",
         description: "Signed in successfully.",
       });
+    } else {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
     }
 
+    setIsLoading(false);
     return { error };
   };
 
@@ -99,6 +134,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         title: "Goodbye!",
         description: "Signed out successfully.",
       });
+      setUser(null);
+      setSession(null);
+      setIsAdmin(false);
     }
   };
 

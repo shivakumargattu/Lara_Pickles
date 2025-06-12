@@ -7,7 +7,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Package, ShoppingCart, Clock, Users } from "lucide-react";
+import { Package, ShoppingCart, Clock, Users, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -18,10 +19,15 @@ const AdminDashboard = () => {
     pendingOrders: 0,
     totalUsers: 0
   });
+  const [error, setError] = useState<string | null>(null);
+  const [statsLoading, setStatsLoading] = useState(true);
 
   useEffect(() => {
+    console.log('AdminDashboard - Auth state:', { user: user?.email, isAdmin, isLoading });
+    
     if (!isLoading) {
       if (!user || !isAdmin) {
+        console.log('Access denied, redirecting to login');
         navigate('/login');
         return;
       }
@@ -32,26 +38,45 @@ const AdminDashboard = () => {
 
   const loadStats = async () => {
     try {
+      setStatsLoading(true);
+      setError(null);
+
       // Get products count
-      const { count: productsCount } = await supabase
+      const { count: productsCount, error: productsError } = await supabase
         .from('products')
         .select('*', { count: 'exact', head: true });
 
+      if (productsError) {
+        console.error('Products count error:', productsError);
+      }
+
       // Get orders count
-      const { count: ordersCount } = await supabase
+      const { count: ordersCount, error: ordersError } = await supabase
         .from('orders')
         .select('*', { count: 'exact', head: true });
+
+      if (ordersError) {
+        console.error('Orders count error:', ordersError);
+      }
 
       // Get pending orders count
-      const { count: pendingCount } = await supabase
+      const { count: pendingCount, error: pendingError } = await supabase
         .from('orders')
         .select('*', { count: 'exact', head: true })
-        .eq('status', 'Pending');
+        .eq('status', 'pending');
+
+      if (pendingError) {
+        console.error('Pending orders count error:', pendingError);
+      }
 
       // Get users count
-      const { count: usersCount } = await supabase
+      const { count: usersCount, error: usersError } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true });
+
+      if (usersError) {
+        console.error('Users count error:', usersError);
+      }
 
       setStats({
         totalProducts: productsCount || 0,
@@ -59,15 +84,22 @@ const AdminDashboard = () => {
         pendingOrders: pendingCount || 0,
         totalUsers: usersCount || 0
       });
+
     } catch (error) {
       console.error('Error loading stats:', error);
+      setError('Failed to load dashboard statistics. Please refresh the page.');
+    } finally {
+      setStatsLoading(false);
     }
   };
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-lg">Loading...</div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <div className="text-lg text-gray-600">Loading...</div>
+        </div>
       </div>
     );
   }
@@ -114,8 +146,19 @@ const AdminDashboard = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-green-800 mb-2">Admin Dashboard</h1>
-          <p className="text-gray-600">Welcome to the Lara Pickles admin panel</p>
+          <p className="text-gray-600">
+            Welcome back, {user.email}! Manage your Lara Pickles business from here.
+          </p>
         </div>
+
+        {error && (
+          <Alert className="mb-6 border-red-200 bg-red-50">
+            <AlertCircle className="h-4 w-4 text-red-600" />
+            <AlertDescription className="text-red-800">
+              {error}
+            </AlertDescription>
+          </Alert>
+        )}
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -132,7 +175,13 @@ const AdminDashboard = () => {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-600">{card.title}</p>
-                    <p className="text-2xl font-bold text-gray-900">{card.value}</p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {statsLoading ? (
+                        <div className="h-8 w-12 bg-gray-200 animate-pulse rounded"></div>
+                      ) : (
+                        card.value
+                      )}
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -176,6 +225,16 @@ const AdminDashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Debug Info for Development */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="mt-8 p-4 bg-gray-100 rounded-lg">
+            <h3 className="font-semibold mb-2">Debug Info:</h3>
+            <p>User Email: {user.email}</p>
+            <p>Is Admin: {isAdmin ? 'Yes' : 'No'}</p>
+            <p>User ID: {user.id}</p>
+          </div>
+        )}
       </div>
       
       <Footer />
