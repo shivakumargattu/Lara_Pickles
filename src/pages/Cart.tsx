@@ -1,24 +1,36 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Trash2, Plus, Minus } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+interface CartItem {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
 
 const Cart = () => {
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState([]);
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     setCartItems(cart);
   }, []);
 
-  const updateQuantity = (id, newQuantity) => {
+  const updateQuantity = (id: number, newQuantity: number) => {
     if (newQuantity <= 0) {
       removeItem(id);
       return;
@@ -29,12 +41,18 @@ const Cart = () => {
     );
     setCartItems(updatedCart);
     localStorage.setItem('cart', JSON.stringify(updatedCart));
+    
+    toast({
+      title: "Cart Updated",
+      description: "Item quantity has been updated.",
+    });
   };
 
-  const removeItem = (id) => {
+  const removeItem = (id: number) => {
     const updatedCart = cartItems.filter(item => item.id !== id);
     setCartItems(updatedCart);
     localStorage.setItem('cart', JSON.stringify(updatedCart));
+    
     toast({
       title: "Item Removed",
       description: "Item has been removed from your cart.",
@@ -42,7 +60,7 @@ const Cart = () => {
   };
 
   const getTotalPrice = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2);
+    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
   const proceedToOrder = () => {
@@ -54,22 +72,50 @@ const Cart = () => {
       });
       return;
     }
-    navigate('/place-order');
+
+    if (!user) {
+      toast({
+        title: "Login Required",
+        description: "Please login to place an order.",
+        variant: "destructive"
+      });
+      navigate('/login');
+      return;
+    }
+
+    setLoading(true);
+    // Simulate order processing
+    setTimeout(() => {
+      localStorage.setItem('cart', '[]');
+      setLoading(false);
+      toast({
+        title: "Order Placed!",
+        description: "Your order has been placed successfully.",
+      });
+      navigate('/order-success');
+    }, 2000);
   };
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-cream">
         <Navbar />
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center py-12">
-            <h1 className="text-3xl font-bold text-green-800 mb-4">Your Cart is Empty</h1>
-            <p className="text-gray-600 mb-8">Looks like you haven't added any pickles to your cart yet.</p>
+        <div className="container mx-auto px-4 py-16">
+          <div className="text-center py-20 animate-fade-in-up">
+            <div className="w-24 h-24 bg-gradient-gold rounded-full flex items-center justify-center mx-auto mb-8 animate-glow">
+              <ShoppingBag className="w-12 h-12 text-deep-navy" />
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-gradient-navy mb-6">
+              Your Cart is Empty
+            </h1>
+            <p className="text-charcoal/70 text-xl mb-8 max-w-md mx-auto">
+              Looks like you haven't added any delicious pickles to your cart yet.
+            </p>
             <Button 
               onClick={() => navigate('/products')}
-              className="bg-green-600 hover:bg-green-700 text-white"
+              className="btn-gold text-deep-navy px-8 py-4 text-lg font-semibold"
             >
-              Shop Pickles
+              Discover Our Pickles
             </Button>
           </div>
         </div>
@@ -79,35 +125,46 @@ const Cart = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-cream">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-green-800 mb-8">Shopping Cart</h1>
+        <div className="mb-8 animate-fade-in-up">
+          <h1 className="text-4xl md:text-5xl font-bold text-gradient-navy mb-4">
+            Shopping Cart
+          </h1>
+          <p className="text-charcoal/70 text-lg">
+            Review your premium pickle selection
+          </p>
+        </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items */}
-          <div className="lg:col-span-2 space-y-4">
-            {cartItems.map((item) => (
-              <Card key={item.id}>
-                <CardContent className="p-4">
-                  <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+          <div className="lg:col-span-2 space-y-6">
+            {cartItems.map((item, index) => (
+              <Card 
+                key={item.id}
+                className="hover-lift bg-white border-0 premium-shadow animate-scale-in-premium"
+                style={{ animationDelay: `${0.1 * index}s` }}
+              >
+                <CardContent className="p-6">
+                  <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
                     <img 
                       src={item.image} 
                       alt={item.name}
-                      className="w-24 h-24 object-cover rounded"
+                      className="w-24 h-24 md:w-32 md:h-32 object-cover rounded-lg premium-shadow"
                     />
                     
                     <div className="flex-1">
-                      <h3 className="font-semibold text-green-800 mb-1">{item.name}</h3>
-                      <p className="text-gray-600 text-sm mb-2">${item.price} each</p>
+                      <h3 className="font-bold text-charcoal mb-2 text-xl">{item.name}</h3>
+                      <p className="text-charcoal/70 mb-4">₹{(item.price * 80).toFixed(0)} each</p>
                       
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-3">
                         <Button
                           onClick={() => updateQuantity(item.id, item.quantity - 1)}
                           size="sm"
                           variant="outline"
-                          className="h-8 w-8 p-0"
+                          className="h-10 w-10 p-0 border-gold hover:bg-gold hover:text-deep-navy"
                         >
                           <Minus className="w-4 h-4" />
                         </Button>
@@ -116,7 +173,7 @@ const Cart = () => {
                           type="number"
                           value={item.quantity}
                           onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 0)}
-                          className="w-16 h-8 text-center"
+                          className="w-20 h-10 text-center border-gold focus:border-gold"
                           min="0"
                         />
                         
@@ -124,7 +181,7 @@ const Cart = () => {
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
                           size="sm"
                           variant="outline"
-                          className="h-8 w-8 p-0"
+                          className="h-10 w-10 p-0 border-gold hover:bg-gold hover:text-deep-navy"
                         >
                           <Plus className="w-4 h-4" />
                         </Button>
@@ -132,8 +189,8 @@ const Cart = () => {
                     </div>
                     
                     <div className="text-right">
-                      <p className="font-semibold text-green-600 mb-2">
-                        ${(item.price * item.quantity).toFixed(2)}
+                      <p className="font-bold text-gold mb-4 text-2xl">
+                        ₹{((item.price * 80) * item.quantity).toFixed(0)}
                       </p>
                       <Button
                         onClick={() => removeItem(item.id)}
@@ -151,38 +208,44 @@ const Cart = () => {
           </div>
           
           {/* Order Summary */}
-          <div>
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="text-xl font-semibold text-green-800 mb-4">Order Summary</h3>
+          <div className="animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+            <Card className="bg-white border-0 premium-shadow sticky top-24">
+              <CardContent className="p-8">
+                <h3 className="text-2xl font-bold text-gradient-navy mb-6">Order Summary</h3>
                 
-                <div className="space-y-2 mb-4">
+                <div className="space-y-3 mb-6">
                   {cartItems.map((item) => (
-                    <div key={item.id} className="flex justify-between text-sm">
+                    <div key={item.id} className="flex justify-between text-charcoal/80">
                       <span>{item.name} x{item.quantity}</span>
-                      <span>${(item.price * item.quantity).toFixed(2)}</span>
+                      <span>₹{((item.price * 80) * item.quantity).toFixed(0)}</span>
                     </div>
                   ))}
                 </div>
                 
-                <div className="border-t pt-4">
-                  <div className="flex justify-between font-semibold text-lg">
-                    <span>Total:</span>
-                    <span className="text-green-600">${getTotalPrice()}</span>
+                <div className="border-t border-gold/20 pt-6 mb-6">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xl font-semibold text-charcoal">Total:</span>
+                    <span className="text-2xl font-bold text-gold">
+                      ₹{(getTotalPrice() * 80).toFixed(0)}
+                    </span>
                   </div>
+                  <p className="text-charcoal/60 text-sm mt-2">
+                    Free delivery across Hyderabad
+                  </p>
                 </div>
                 
                 <Button 
                   onClick={proceedToOrder}
-                  className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white"
+                  disabled={loading}
+                  className="w-full btn-gold text-deep-navy font-semibold text-lg py-4 mb-4"
                 >
-                  Place Order
+                  {loading ? 'Processing...' : 'Place Order'}
                 </Button>
                 
                 <Button 
                   onClick={() => navigate('/products')}
                   variant="outline"
-                  className="w-full mt-2 border-green-600 text-green-600"
+                  className="w-full border-gold text-gold hover:bg-gold hover:text-deep-navy"
                 >
                   Continue Shopping
                 </Button>

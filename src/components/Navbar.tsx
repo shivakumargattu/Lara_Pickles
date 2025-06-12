@@ -1,22 +1,21 @@
 
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Menu, X, ShoppingCart, User, LogOut, Star } from "lucide-react";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, isAdmin, signOut } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
-  // Mock authentication state - in real app this would come from context/store
-  const isLoggedIn = localStorage.getItem('user') !== null;
-  const isAdmin = localStorage.getItem('admin') !== null;
+  // Get cart items count from localStorage
   const cartItemsCount = JSON.parse(localStorage.getItem('cart') || '[]').length;
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('admin');
+  const handleLogout = async () => {
+    await signOut();
     navigate('/');
     setIsMenuOpen(false);
   };
@@ -82,7 +81,7 @@ const Navbar = () => {
                   Logout
                 </Button>
               </>
-            ) : isLoggedIn ? (
+            ) : user ? (
               <>
                 <Button
                   onClick={() => navigate('/cart')}
@@ -126,8 +125,9 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-cream hover:text-gold transition-colors"
+            className="md:hidden text-cream hover:text-gold transition-colors p-2"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
           >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -144,84 +144,88 @@ const Navbar = () => {
                     navigate(item.path);
                     setIsMenuOpen(false);
                   }}
-                  className={`text-left text-cream hover:text-gold transition-colors font-medium ${
-                    location.pathname === item.path ? 'text-gold font-bold' : ''
+                  className={`text-left text-cream hover:text-gold transition-colors font-medium p-2 rounded ${
+                    location.pathname === item.path ? 'text-gold font-bold bg-gold/10' : ''
                   }`}
                 >
                   {item.name}
                 </button>
               ))}
               
-              {isAdmin ? (
-                <>
-                  <Button
-                    onClick={() => {
-                      navigate('/admin');
-                      setIsMenuOpen(false);
-                    }}
-                    className="btn-premium text-cream justify-start"
-                  >
-                    Admin Dashboard
-                  </Button>
-                  <Button
-                    onClick={handleLogout}
-                    variant="ghost"
-                    className="text-cream hover:text-gold hover:bg-cream/10 justify-start"
-                  >
-                    <LogOut className="w-4 h-4 mr-2" />
-                    Logout
-                  </Button>
-                </>
-              ) : isLoggedIn ? (
-                <>
-                  <Button
-                    onClick={() => {
-                      navigate('/cart');
-                      setIsMenuOpen(false);
-                    }}
-                    variant="ghost"
-                    className="text-cream hover:text-gold hover:bg-cream/10 justify-start relative"
-                  >
-                    <ShoppingCart className="w-5 h-5 mr-2" />
-                    Cart
-                    {cartItemsCount > 0 && (
-                      <span className="ml-2 bg-gold text-deep-navy text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                        {cartItemsCount}
-                      </span>
-                    )}
-                  </Button>
-                  <Button
-                    onClick={handleLogout}
-                    variant="ghost"
-                    className="text-cream hover:text-gold hover:bg-cream/10 justify-start"
-                  >
-                    <LogOut className="w-4 h-4 mr-2" />
-                    Logout
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button
-                    onClick={() => {
-                      navigate('/login');
-                      setIsMenuOpen(false);
-                    }}
-                    variant="ghost"
-                    className="text-cream hover:text-gold hover:bg-cream/10 justify-start"
-                  >
-                    Login
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      navigate('/register');
-                      setIsMenuOpen(false);
-                    }}
-                    className="btn-gold text-deep-navy justify-start font-semibold"
-                  >
-                    Register
-                  </Button>
-                </>
-              )}
+              <div className="border-t border-gold/20 pt-4">
+                {isAdmin ? (
+                  <>
+                    <Button
+                      onClick={() => {
+                        navigate('/admin');
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full btn-premium text-cream justify-start mb-2"
+                    >
+                      <User className="w-4 h-4 mr-2" />
+                      Admin Dashboard
+                    </Button>
+                    <Button
+                      onClick={handleLogout}
+                      variant="ghost"
+                      className="w-full text-cream hover:text-gold hover:bg-cream/10 justify-start"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Logout
+                    </Button>
+                  </>
+                ) : user ? (
+                  <>
+                    <Button
+                      onClick={() => {
+                        navigate('/cart');
+                        setIsMenuOpen(false);
+                      }}
+                      variant="ghost"
+                      className="w-full text-cream hover:text-gold hover:bg-cream/10 justify-start relative mb-2"
+                    >
+                      <ShoppingCart className="w-5 h-5 mr-2" />
+                      Cart
+                      {cartItemsCount > 0 && (
+                        <span className="ml-auto bg-gold text-deep-navy text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                          {cartItemsCount}
+                        </span>
+                      )}
+                    </Button>
+                    <Button
+                      onClick={handleLogout}
+                      variant="ghost"
+                      className="w-full text-cream hover:text-gold hover:bg-cream/10 justify-start"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Logout
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      onClick={() => {
+                        navigate('/login');
+                        setIsMenuOpen(false);
+                      }}
+                      variant="ghost"
+                      className="w-full text-cream hover:text-gold hover:bg-cream/10 justify-start mb-2"
+                    >
+                      <User className="w-4 h-4 mr-2" />
+                      Login
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        navigate('/register');
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full btn-gold text-deep-navy justify-start font-semibold"
+                    >
+                      Register
+                    </Button>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )}
